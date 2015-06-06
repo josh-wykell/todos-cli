@@ -31,8 +31,17 @@ module Todo
         puts list.name
         puts "-" * list.name.length
         list.items.each do |item|
-          done = item.is_complete ? '√' : ' '
-          puts "[#{done}] #{item.id} #{item.task}"
+         unless list_name.blank?
+            done = item.is_complete ? '√' : ' '
+            puts "[#{done}] #{item.id} #{item.task}"
+            due = item.due_date?  
+            puts item.due_date
+          else
+            todos = list.items.reject { |item| item.is_complete ? }
+            puts " #{item.id} #{item.task}"
+            due = item.due_date?  
+            puts item.due_date
+          end
         end
       end
     end
@@ -43,6 +52,12 @@ module Todo
       puts "Task: #{item.task} is done... Bam!!"
     end
 
+    def self.due (item_id, time)
+      item = Item.find(item_id)
+      time = item.update_attributes :due_date => time
+      puts "#{item.due_date}"
+    end
+
     def self.run
       case ARGV[0]
         when "add"
@@ -51,9 +66,12 @@ module Todo
         when "list"
           list(ARGV[1])
 
+        when "due"
+         due(ARGV[1], ARGV[2])
+
         when "done"
           done(ARGV[1])    
-        end
       end
     end
+  end
 end
