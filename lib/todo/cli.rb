@@ -55,7 +55,7 @@ module Todo
     end
 
     def self.next_item
-      items =Item.all.reject{ |item| item.is_complete }
+      items = Item.all.reject{ |item| item.is_complete }
       if items.include? :due_date
         items = items.keep_if { |item| item.due_date?}
         @item = items.shuffle!.pop
@@ -63,6 +63,21 @@ module Todo
       else
         item = items.shuffle!.pop
         puts "#{item.id} #{item.task}"
+      end
+    end
+
+    def self.search(term)
+      items = Item.all
+      search = items.select do |item|
+        item.task.include?(term) 
+      end
+      unless search == []
+        search.each do |item|
+          done = item.is_complete ? '√' : ' '
+          puts "[#{done}] #{item.id} #{item.task} #{item.due_date}"
+        end
+      else
+        puts "No searches match your term."
       end
     end
 
@@ -79,9 +94,12 @@ module Todo
 
         when "done"
           done(ARGV[1]) 
-          \
+        
         when "next"
           next_item()   
+        
+        when "search"
+          search(ARGV[1])
         end
       end
     end
