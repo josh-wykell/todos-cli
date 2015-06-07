@@ -54,6 +54,18 @@ module Todo
       puts "#{item.due_date}"
     end
 
+    def self.next_item
+      items =Item.all.reject{ |item| item.is_complete }
+      if items.include? :due_date
+        items = items.keep_if { |item| item.due_date?}
+        @item = items.shuffle!.pop
+        puts "#{item.id} #{item.task} #{item.due_date} "
+      else
+        item = items.shuffle!.pop
+        puts "#{item.id} #{item.task}"
+      end
+    end
+
     def self.run
       case ARGV[0]
         when "add"
@@ -66,7 +78,10 @@ module Todo
           due(ARGV[1], ARGV[2])
 
         when "done"
-          done(ARGV[1])    
+          done(ARGV[1]) 
+          \
+        when "next"
+          next_item()   
         end
       end
     end
