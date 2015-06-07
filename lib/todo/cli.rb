@@ -31,20 +31,16 @@ module Todo
         puts list.name
         puts "-" * list.name.length
         list.items.each do |item|
-         unless list_name.blank?
-            done = item.is_complete ? '√' : ' '
+          done = item.is_complete ? '√' : ' '
+          unless list_name.blank? && item.is_complete
             puts "[#{done}] #{item.id} #{item.task}"
-            due = item.due_date?  
-            puts item.due_date
-          else
-            todos = list.items.reject { |item| item.is_complete ? }
-            puts " #{item.id} #{item.task}"
             due = item.due_date?  
             puts item.due_date
           end
         end
       end
     end
+  
 
     def self.done(item_id)
       item = Item.find(item_id)
@@ -67,11 +63,11 @@ module Todo
           list(ARGV[1])
 
         when "due"
-         due(ARGV[1], ARGV[2])
+          due(ARGV[1], ARGV[2])
 
         when "done"
           done(ARGV[1])    
+        end
       end
     end
-  end
 end
